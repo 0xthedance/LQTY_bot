@@ -9,7 +9,8 @@ from tests.liquity_mock import LiquityMock, mock_liquity
 
 
 class LiquityTrove:
-    '''Mock Trove class'''
+    """Mock Trove class"""
+
     def __init__(self, owner, coll, debt) -> None:
         self.owner = owner
         self.coll = coll
@@ -40,6 +41,7 @@ troves_partial_liquidation = [
     Trove("0xAddress6", coll=350000 * 10**18, debt=900000000 * 10**18),
 ]
 
+
 @pytest.mark.use_network("ethereum:mainnet:alchemy")
 @pytest.mark.parametrize(
     "test_trove,expected_output",
@@ -56,6 +58,7 @@ troves_partial_liquidation = [
 def test_check(mock_get_eth_price, test_trove, expected_output, networks):
     mock_get_eth_price.return_value = 2000
     assert test_trove.check() == expected_output
+
 
 @pytest.mark.use_network("ethereum:mainnet:alchemy")
 @pytest.mark.parametrize(
@@ -79,6 +82,7 @@ def test_get_trove_list(mock_eth_price, mock_liquity, price, expected_output):
 
     # Assert that the length of the result matches the expected output
     assert result == expected_output
+
 
 @pytest.mark.use_network("ethereum:mainnet:alchemy")
 @pytest.mark.parametrize(
@@ -119,6 +123,7 @@ def test_liquidate_list_of_troves(
         mock_batch_liquidate.assert_not_called()
     else:
         mock_batch_liquidate.assert_called_once_with(address_liquidated)
+
 
 @pytest.mark.use_network("ethereum:mainnet:alchemy")
 @pytest.mark.parametrize(

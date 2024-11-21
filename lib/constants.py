@@ -1,7 +1,5 @@
 import os 
 
-from ape import networks
-
 NETWORK_CONFIG = {
     "mainnet": {
         "TROVE_MANAGER": "0xA39739EF8b0231DbFA0DcdA07d7e29faAbCf4bb2",
@@ -23,8 +21,7 @@ ETH_USD_PRICE_FEED = "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419"
 MIN_CLR = 1.10
 
 # Recipient of liquidation rewards
-ACCOUNT_ALIAS = "LQTYBot"
-#os.environ['ACCOUNT_ALIAS']
+ACCOUNT_ALIAS = os.environ["ACCOUNT_ALIAS"]
 
 # About 2M gas required to liquidate 10 Troves (much of it is refunded though).
 MAX_TROVES_TO_LIQUIDATE = 4

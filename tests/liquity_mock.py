@@ -4,7 +4,8 @@ from lib.liquidation_bot import LiquidationBot
 
 
 class LiquityMock:
-    '''Mock LiquityMethods class'''
+    """Mock LiquityMethods class"""
+
     def __init__(self, troves) -> None:
         self.troves = troves
 

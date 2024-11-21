@@ -3,8 +3,8 @@ import logging.config
 import os
 
 
-LOG_EMAIL = os.environ['LOG_EMAIL']
-EMAIL_PASSWORD = os.environ['EMAIL_PASSWORD']
+LOG_EMAIL = os.environ["LOG_EMAIL"]
+EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
 
 LOGGING_CONFIG = {
     "version": 1,
@@ -56,7 +56,7 @@ LOGGING_CONFIG = {
 
 
 def configure_logging():
-    '''Function to configure the bot logger'''
+    """Function to configure the bot logger"""
     logging.config.dictConfig(LOGGING_CONFIG)
     logger = logging.getLogger("my_logger")
     logger.info("logger configured")

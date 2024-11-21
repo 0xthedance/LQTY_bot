@@ -1,6 +1,6 @@
 import logging
 
-from ape import Contract, chain, accounts,networks
+from ape import Contract, chain, accounts, networks
 from ape.exceptions import ContractLogicError
 from lib.constants import NETWORK_CONFIG
 
@@ -16,24 +16,25 @@ account.set_autosign(True)
 
 logger = logging.getLogger("my_logger")
 
+
 def load_network_constants():
     network_name = networks.provider.network.name
-    print("net:", network_name)
-    if not network_name in NETWORK_CONFIG:
+    if network_name not in NETWORK_CONFIG:
         raise ValueError(f"Network not supported: {network_name}")
-    
+
     network_constants = {
-        "TROVE_MANAGER" : NETWORK_CONFIG[network_name]["TROVE_MANAGER"],
-        "MULTI_TROVE_GETTER" : NETWORK_CONFIG[network_name]["MULTI_TROVE_GETTER"],
-        "BORROWER_OPERATIONS" : NETWORK_CONFIG[network_name]["BORROWER_OPERATIONS"],
-        "FLASHBOT" : NETWORK_CONFIG[network_name]["FLASHBOT"],
+        "TROVE_MANAGER": NETWORK_CONFIG[network_name]["TROVE_MANAGER"],
+        "MULTI_TROVE_GETTER": NETWORK_CONFIG[network_name]["MULTI_TROVE_GETTER"],
+        "BORROWER_OPERATIONS": NETWORK_CONFIG[network_name]["BORROWER_OPERATIONS"],
+        "FLASHBOT": NETWORK_CONFIG[network_name]["FLASHBOT"],
     }
     return network_constants
+
 
 def get_eth_price() -> float:
     """Fetch ETH price in a smart contract Oracle"""
     decimals = 10**8
-    with networks.parse_network_choice("ethereum:mainnet:alchemy") as provider:
+    with networks.parse_network_choice("ethereum:mainnet:alchemy"):
         contract = Contract(ETH_USD_PRICE_FEED)
         try:
             eth_price = contract.latestRoundData()
@@ -42,8 +43,10 @@ def get_eth_price() -> float:
             logger.error("Cannot fetch eth price due this error %s", err)
             return -1
 
+
 def activate_flashbot():
-    return load_network_constants()['FLASHBOT']
+    return load_network_constants()["FLASHBOT"]
+
 
 def estimate_gas_price() -> int:
     """Function that estimates the actual gas price fetching it from the last block.
@@ -52,7 +55,7 @@ def estimate_gas_price() -> int:
     try:
         block = chain.provider.get_block("latest")  # obtain base fee
     except Exception as err:
-        logger.error("Imposible to obtain base fee due an error: %s",err)
+        logger.error("Imposible to obtain base fee due an error: %s", err)
         return -1
     if activate_flashbot():
         priority_fee = 0

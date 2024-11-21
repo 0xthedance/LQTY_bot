@@ -28,9 +28,7 @@ class LiquidationBot:
                 n_troves = trove_count
                 more_troves = False
 
-            trove_details = self.liquity.get_multiple_sorted_troves(
-                start_ind, n_troves
-            )  
+            trove_details = self.liquity.get_multiple_sorted_troves(start_ind, n_troves)
             logger.debug(" %s troves obtained", trove_details)
 
             if trove_details == 0:
@@ -51,16 +49,10 @@ class LiquidationBot:
         return selected
 
     def liquidate_list_of_troves(self, selected: list[Trove]) -> None:
-        """Function that liquidate the list of troves if the transaction is profitable"""
+        """Function that liquidate the troves if the transaction is profitable"""
         """ Rough gas requirements:
-            * In normal mode:
-                - using Stability Pool: 400K + n * 176K
-                - using redistribution: 377K + n * 174K
-            * In recovery mode:
-                - using Stability Pool: 415K + n * 178K
-                - using redistribution: 391K        + n * 178K
-            
-            `500K + n * 200K` should cover all cases (including starting in recovery mode and ending in
+            `500K + n * 200K` should cover all cases
+            (including starting in recovery mode and ending in
             normal mode) with some margin for safety.
         """
         gas = estimate_gas_price()
@@ -94,8 +86,10 @@ class LiquidationBot:
                 trove_addresses.append(trove.address)
             self.liquity.batch_liquidate_troves(trove_addresses)
         else:
-            logger.info("It is not profitable to liquidate troves. The collateral is insufficient, and there is no benefit from this operation.")
-        
+            logger.info(
+                "It is not profitable to liquidate troves. The collateral is insufficient, and there is no benefit from this operation."
+            )
+
     def run_bot(self):
         """Launch the bot"""
         logger.info("starting the check")
@@ -107,4 +101,4 @@ class LiquidationBot:
                 key=lambda x: x.coll, reverse=True
             )  # sort by descending collateral
             for i in range(0, len(selected), MAX_TROVES_TO_LIQUIDATE):
-                self.liquidate_list_of_troves(selected[i : i + MAX_TROVES_TO_LIQUIDATE])
+                self.liquidate_list_of_troves(selected[i: i + MAX_TROVES_TO_LIQUIDATE])

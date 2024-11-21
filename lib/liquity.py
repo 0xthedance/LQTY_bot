@@ -11,7 +11,7 @@ logger = logging.getLogger("my_logger")
 
 
 class Trove:
-    '''Class to create LQTY trove instances'''
+    """Class to create LQTY trove instances"""
 
     def __init__(self, address: str, coll: int, debt: int) -> None:
         self.address = address
@@ -32,17 +32,17 @@ class Trove:
         )
 
     def check(self) -> bool:
-        '''Funtion to check if CR is below the threshold'''
+        """Funtion to check if CR is below the threshold"""
         if self.debt == 0:
             return False
-        
+
         eth_price = get_eth_price()
 
         if eth_price < 0:
             return False
 
         coll_ratio = (self.coll * eth_price) / (self.debt)
-        logger.info("price %s{} CR %s",eth_price,coll_ratio)
+        logger.info("price %s{} CR %s", eth_price, coll_ratio)
 
         return coll_ratio < MIN_CLR
 
@@ -53,8 +53,14 @@ class Trove:
 
 
 class LiquityMethods:
-    '''Class containing the LQTY methods'''
-    def __init__(self, trove_manager_address, multi_trove_getter_address, borrower_operations_address) -> None:
+    """Class containing the LQTY methods"""
+
+    def __init__(
+        self,
+        trove_manager_address,
+        multi_trove_getter_address,
+        borrower_operations_address,
+    ) -> None:
         self.trove_manager = Contract(trove_manager_address)
         self.multi_trove_getter = Contract(multi_trove_getter_address)
         self.borrower_operations = Contract(borrower_operations_address)
@@ -79,7 +85,7 @@ class LiquityMethods:
 
     def batch_liquidate_troves(self, trove_addresses):
         """Call trove manager contract to liquidate a batch of trove_addresses"""
-        logger.info("   %s",trove_addresses)
+        logger.info("   %s", trove_addresses)
 
         try:
             self.trove_manager.batchLiquidateTroves(
@@ -90,7 +96,7 @@ class LiquityMethods:
                 "It was not possible to liquidate the troves batch due the following error: %s",
                 err,
             )
-        except OutOfGasError:
+        except OutOfGasError as err:
             logger.critical(
                 "Out of gas. Exiting Liquidation bot: %s",
                 err,
@@ -128,9 +134,12 @@ class LiquityMethods:
                     compensation,
                 )
             except ContractLogicError as err:
-                logger.error("It was not possible to liquidate the trove due a contract error %s",err)
-            
-            except OutOfGasError:
+                logger.error(
+                    "It was not possible to liquidate the trove due a contract error %s",
+                    err,
+                )
+
+            except OutOfGasError as err:
                 logger.critical(
                     "Out of gas. Exiting Liquidation bot: %s",
                     err,
